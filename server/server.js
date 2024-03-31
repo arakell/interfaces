@@ -17,7 +17,7 @@ app.listen(PORT, () => {
 
 
 app.get('/api/login', (req, res) => {
-    console.log("Get /api/login request")
+    console.log("login request")
     const login = req.query.login; // Получаем логин из строки запроса
     const password = req.query.password; // Получаем пароль из строки запроса
 
@@ -38,5 +38,41 @@ app.get('/api/login', (req, res) => {
         }
     });
 });
+
+app.get('/api/register', (req, res) => {
+    console.log("register request");
+    const login = req.query.login; // Получаем логин из строки запроса
+    const password = req.query.password; // Получаем пароль из строки запроса
+
+    // Проверяем, существует ли пользователь с таким логином
+    let sqlCheckUser = 'SELECT * FROM client WHERE login=?';
+    dao.db.get(sqlCheckUser, [login], (err, row) => {
+        if (err) {
+            console.error(err.message);
+            res.status(500).json({ error: 'Internal Server Error' });
+        } else {
+            if (row) {
+                // Пользователь с таким логином уже существует
+                res.status(409).json({ error: 'User with this login already exists' });
+                console.log("Answer 409: User with this login already exists");
+            } else {
+                // Пользователя с таким логином нет, добавляем нового пользователя
+                let sqlAddUser = 'INSERT INTO client (login, password, type) VALUES (?, ?, "user")';
+                dao.db.run(sqlAddUser, [login, password], function(err) {
+                    if (err) {
+                        console.error(err.message);
+                        res.status(500).json({ error: 'Internal Server Error' });
+                    } else {
+                        // Новый пользователь успешно добавлен
+                        console.log("New user registered: ", login);
+                        res.status(200).json({ success: true });
+                        console.log("Answer 200: New user registered successfully");
+                    }
+                });
+            }
+        }
+    });
+});
+
 
 

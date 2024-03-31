@@ -9,12 +9,14 @@
 <body>
     <div class="container">
         <h2>Регистрация</h2>
-        <form id="registerForm" action="register_handler.php" method="post">
+        <form id="registerForm">
             <label for="username">Логин:</label><br>
-            <input type="text" id="username" name="username"><br>
+            <input type="text" id="registerUsername" name="username"><br>
             <label for="password">Пароль:</label><br>
-            <input type="password" id="password" name="password"><br><br>
-            <input type="submit" value="Register">
+            <input type="password" id="registerPassword" name="password"><br><br>
+            <button id="registerButton" type="button" class="button">Регистрация</button><br />
+            <p id="error-message" style="color: red; display: none;">Логин занят</p>
+            <script type="module" src="clientRegister.js"></script>
         </form>
         <p>Есть аккаунт? <a href="login.html">Войти</a></p>
     </div>
